@@ -74,4 +74,12 @@ if !isempty(get(ENV, "THARRAYS_DEV", "")) || !include_remote_script(version_str)
 end
 
 JULIA_EXE = joinpath(Sys.BINDIR, "julia")
-run(`$(JULIA_EXE) $(JULIA_THC_GENERATOR)`)
+# 检查是否在GitHub Actions环境中
+is_github_actions = haskey(ENV, "GITHUB_ACTIONS")
+
+if !is_github_actions
+    JULIA_EXE = joinpath(Sys.BINDIR, "julia")
+    run(`$(JULIA_EXE) $(JULIA_THC_GENERATOR)`)
+else
+    @info "Skipping generator in GitHub Actions environment"
+end
